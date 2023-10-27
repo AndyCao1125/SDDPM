@@ -29,10 +29,9 @@
   </p>
 </p>
 
-3D-LLM is the first Large Language Model that could take 3D representations as inputs. It is able to handle both object (e.g., objaverse) and scene data (e.g., scannet & hm3d). 
 
 
-# Spiking Denoising Diffusion Probabilistic Models (WACV'24)
+## Code
 Official implementation of the SDDPM (WACV 2024) , including training code and trained models.
 
 Coming Soon...
