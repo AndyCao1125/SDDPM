@@ -1,20 +1,26 @@
 <br />
 <p align="center">
   <h1 align="center">Spiking Denoising Diffusion Probabilistic Models (WACV 2024) </h1>
-  <p align="center">
-    <a href="https://evelinehong.github.io">Jiahang Cao</a>,
-    <a href="https://haoyuzhen.com">Ziqing Wang</a>,
-    <a href="https://peihaochen.github.io">Hanzhong Guo</a>,
+  <p align="center" style="font-size: 1.2em; font-weight: bold;">
+    Jiahang Cao<sup>1*</sup>,
+    Ziqing Wang<sup>2*</sup>,
+    Hanzhong Guo<sup>3*</sup>,
+    Hao Cheng<sup>1</sup>,
+    Qiang Zhang<sup>1</sup>,
+    Renjing Xu<sup>1†</sup>
+<!--     <a href="https://evelinehong.github.io">Jiahang Cao*</a>,
+    <a href="https://haoyuzhen.com">Ziqing Wang*</a>,
+    <a href="https://peihaochen.github.io">Hanzhong Guo*</a>,
     <a href="https://zsh2000.github.io">Hao Cheng</a>,
     <a href="https://yilundu.github.io">Qiang Zhang</a>,
-    <a href="https://zfchenunique.github.io">Renjing Xu</a>
+    <a href="https://zfchenunique.github.io">Renjing Xu</a> -->
+  </p>
+  <p align="center" style="font-size: 0.9em; font-style: italic;">
+    The Hong Kong University of Science and Technology (Guangzhou) 
   </p>
   <p align="center">
-    <a href='https://arxiv.org/abs/2307.12981'>
+    <a href='https://arxiv.org/abs/2306.17046'>
       <img src='https://img.shields.io/badge/Paper-PDF-red?style=flat&logo=arXiv&logoColor=red' alt='Paper PDF'>
-    </a>
-    <a href='https://vis-www.cs.umass.edu/3dllm/' style='padding-left: 0.5rem;'>
-      <img src='https://img.shields.io/badge/Project-Page-blue?style=flat&logo=Google%20chrome&logoColor=blue' alt='Project Page'>
     </a>
   </p>
   <p align="center">
