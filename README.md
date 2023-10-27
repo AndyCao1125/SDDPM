@@ -19,7 +19,7 @@
     </a>
   </p>
   <p align="center">
-    <img src="figs/illustration_main.pdf" alt="Logo" width="80%">
+    <img src="figs/illustration_main.png" alt="Logo" width="80%">
   </p>
 </p>
 
