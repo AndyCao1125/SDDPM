@@ -1,6 +1,7 @@
 <br />
 <p align="center">
-  <h1 align="center">Spiking Denoising Diffusion Probabilistic Models (WACV 2024) </h1>
+  <h1 align="center">Spiking Denoising Diffusion Probabilistic Models
+<p align="center">(WACV 2024)</p></h1>
   <p align="center" >
     Jiahang Cao<sup>*</sup>,
     Ziqing Wang<sup>*</sup>,
