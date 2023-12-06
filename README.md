@@ -73,7 +73,7 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python main_SDDPM.py \
 ```
 
 ## Image Generation Results
-
+![results](figs/generation_results.png)
 
 ## Citation
 
