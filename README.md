@@ -89,8 +89,9 @@ If you find our work useful, please consider citing:
 ```
 
 ## Acknowledgements
+We thank the authors ([pytorch-ddpm](https://github.com/w86763777/pytorch-ddpm), [spikingjelly](https://github.com/fangwei123456/spikingjelly)) for their open-sourced codes.
 
-https://github.com/w86763777/pytorch-ddpm
+For any help or issues of this project, please contact jcao248@connect.hkust-gz.edu.cn.
 
 
 
