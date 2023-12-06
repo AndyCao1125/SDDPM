@@ -88,7 +88,7 @@ If you find our work useful, please consider citing:
 }
 ```
 
-### Acknowledgements
+## Acknowledgements
 
 https://github.com/w86763777/pytorch-ddpm
 
