@@ -33,13 +33,13 @@
 
 ## Requirements
 
-1. (Optional) Creating conda environment
+1. (Optional) Creating conda environment.
 ```shell
 conda create -n SDDPM python=3.8
 conda activate SDDPM
 ```
 
-2. Install for development
+2. Installing dependencies.
 ```shell
 git clone https://github.com/AndyCao1125/SDDPM.git
 cd SDDPM
