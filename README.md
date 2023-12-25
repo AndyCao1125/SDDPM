@@ -23,6 +23,9 @@
     <a href='https://arxiv.org/abs/2306.17046'>
       <img src='https://img.shields.io/badge/Paper-PDF-red?style=flat&logo=arXiv&logoColor=red' alt='Paper PDF'>
     </a>
+    <a href='https://openaccess.thecvf.com/content/WACV2024/html/Cao_Spiking_Denoising_Diffusion_Probabilistic_Models_WACV_2024_paper.html' style='padding-left: 0.5rem;'>
+      <img src='https://img.shields.io/badge/Proceeding-HTML-blue?style=flat&logo=Google%20chrome&logoColor=blue' alt='Proceeding Supp'>
+    </a>
   </p>
   <p align="center">
     <img src="figs/illustration_main.png" alt="Logo" width="80%">
