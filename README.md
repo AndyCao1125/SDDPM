@@ -80,11 +80,12 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python main_SDDPM.py \
 If you find our work useful, please consider citing:
 
 ```
-@article{cao2023spiking,
+@inproceedings{cao2024spiking,
   title={Spiking denoising diffusion probabilistic models},
   author={Cao, Jiahang and Wang, Ziqing and Guo, Hanzhong and Cheng, Hao and Zhang, Qiang and Xu, Renjing},
-  journal={arXiv preprint arXiv:2306.17046},
-  year={2023}
+  booktitle={Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision},
+  pages={4912--4921},
+  year={2024}
 }
 ```
 
