@@ -67,6 +67,8 @@ CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python main_SDDPM.py \
 ## Evaluation
 Codes for evaluating the image generation quantitative results, including FID and IS score.
 
+[Update March.19th] The checkpoint of SDDPM in CIFAR-10 is now released. You can download the checkpoint through [this link](https://drive.google.com/drive/folders/1ATfGPQqlqklDuWtAtll-I9_7bMJuqEmy?usp=drive_link).
+
 ```shell
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python main_SDDPM.py \
     --eval \
