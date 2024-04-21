@@ -73,7 +73,7 @@ Codes for evaluating the image generation quantitative results, including FID an
 CUDA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7 python main_SDDPM.py \
     --eval \
     --pre_trained_path 'your/model' \
-    --num_images 500000 \
+    --num_images 50000 \        
     --fid_cache './stats/cifar10.train.npz'
 ```
 
