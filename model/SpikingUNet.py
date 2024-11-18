@@ -9,6 +9,7 @@ from spikingjelly.activation_based import functional, surrogate
 # from spikingjelly.activation_based.neuron import LIFNode as IFNode
 # from spikingjelly.activation_based.neuron import ParametricLIFNode as IFNode
 from spikingjelly.activation_based.neuron import IFNode as IFNode
+import snntorch.spikegen as spikegen
 
 import os
 
@@ -55,7 +56,7 @@ class TimestepBlock(nn.Module):
         """
 
 
-class TimeEmbedding(nn.Module):
+class TimeEmbedding(nn.Module): # Refers to time of the diffusion process
     def __init__(self, T, d_model, dim):  ## T: total step of diff; d_model: base channel num; dim:d_model*4
         assert d_model % 2 == 0
         super().__init__()
@@ -226,7 +227,7 @@ class MembraneOutputLayer(nn.Module):
 
 
 class Spk_UNet(nn.Module):
-    def __init__(self, T, ch, ch_mult, attn, num_res_blocks, dropout, timestep, img_ch=3):
+    def __init__(self, T, ch, ch_mult, attn, num_res_blocks, dropout, timestep, img_ch=3, encoding=None):
         super().__init__()
         # assert all([i < len(ch_mult) for i in attn]), 'attn index out of bound'
 
@@ -239,6 +240,7 @@ class Spk_UNet(nn.Module):
         self.neuron = IFNode(surrogate_function=surrogate.ATan())
         self.conv_identity = nn.Conv2d(ch, ch, kernel_size=3, stride=1, padding=1)
         self.bn_identity = nn.BatchNorm2d(ch)
+        self.encoding = encoding
 
         self.downblocks = nn.ModuleList()
         chs = [ch]  # record output channel when dowmsample for upsample
@@ -300,14 +302,19 @@ class Spk_UNet(nn.Module):
         x = x.unsqueeze(0).repeat(self.timestep, 1, 1, 1, 1)  # [T, B, C, H, W]
 
         # Timestep embedding
-        temb = self.time_embedding(t)
+        temb = self.time_embedding(t) # Diffusion process
 
         # Downsampling
         T, B, C, H, W = x.shape
+        if self.encoding == 'rate':
+            h = spikegen.rate(h, time_var_input=True)
+
         h = x.flatten(0, 1)  ## [T*B C H W]
         h = self.conv(h)
         h = self.bn(h).reshape(T, B, -1, H, W).contiguous()
-        h = self.neuron(h)
+
+        if not self.encoding:
+            h = self.neuron(h)
 
         h = h.flatten(0, 1)  ## [T*B C H W]
         h = self.conv_identity(h)

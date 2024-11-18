@@ -31,6 +31,8 @@ parser.add_argument('--eval', action='store_true', default=False, help='load ckp
 parser.add_argument('--dataset', type=str, default='cifar10', help='dataset name')
 parser.add_argument('--sample_type', type=str, default='ddpm', help='Sample Type')
 parser.add_argument('--wandb', action='store_true', default=False, help='use wandb to log training')
+
+parser.add_argument("--encoding", default='rate', type=str)
 # Spiking UNet
 parser.add_argument('--ch', default=128, type=int, help='base channel of UNet')
 parser.add_argument('--ch_mult', default=[1, 2, 2, 4], help='channel multiplier')
@@ -195,7 +197,7 @@ def train():
         net_model.load_state_dict(ckpt['net_model'], strict=True)
     else:
         print('Training from scratch')
-        
+
 
     trainer = GaussianDiffusionTrainer(
     net_model, float(args.beta_1), float(args.beta_T), args.T).to(device)
