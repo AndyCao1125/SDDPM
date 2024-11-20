@@ -75,7 +75,9 @@ parser.add_argument('--pre_trained_path', default='./pth/1224_4T.pt', help='FID 
 args = parser.parse_args()
 
 
-device = torch.device('cuda:0')
+# device = torch.device('cuda:0')
+# device = torch.device("mps")
+device = torch.device('cpu')
 
 
 def seed_everything(seed_value):
@@ -128,6 +130,9 @@ def evaluate(sampler, model):
         use_torch=args.fid_use_torch, verbose=True)
     return (IS, IS_std), FID, images
 
+def set_range(X):
+    return 2 * X - 1.
+
 
 def train():
     if args.dataset == 'cifar10':
@@ -162,14 +167,14 @@ def train():
                                             transform=transform)
     
     elif args.dataset == 'mnist':
-        SetRange = torchvision.transforms.Lambda(lambda X: 2 * X - 1.)
+        SetRange = torchvision.transforms.Lambda(set_range)
         transform = torchvision.transforms.Compose([
         torchvision.transforms.Resize((32,32)),
         torchvision.transforms.ToTensor(),
         SetRange])
-        dataset = torchvision.datasets.MNIST(root='/home/dataset/Mnist', 
+        dataset = torchvision.datasets.MNIST(root='dataset/Mnist', 
                                             train=True, 
-                                            download=True, 
+                                            download=True,
                                             transform=transform)
         
     elif args.dataset == 'lsun':
@@ -208,7 +213,7 @@ def train():
     
     if args.parallel:
         trainer = torch.nn.DataParallel(trainer)
-        net_sampler = torch.nn.DataParallel(net_sampler).cuda()
+        net_sampler = torch.nn.DataParallel(net_sampler).to(device)
 
 
 
@@ -219,6 +224,7 @@ def train():
     x_T = torch.randn(int(args.sample_size), int(args.img_ch), int(args.img_size), int(args.img_size))
     x_T = x_T.to(device)
     grid = (make_grid(next(iter(dataloader))[0][:args.sample_size]) + 1) / 2
+
     save_image(grid, os.path.join(args.logdir,'sample','groundtruth.png'))
 
     # show model size
