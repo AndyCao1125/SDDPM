@@ -154,6 +154,9 @@ class InceptionV3(nn.Module):
                               mode='bilinear',
                               align_corners=False)
 
+        if x.size(1) == 1:
+            x = x.repeat(1, 3, 1, 1)
+
         if self.normalize_input:
             x = 2 * x - 1  # Scale from range (0, 1) to range (-1, 1)
 

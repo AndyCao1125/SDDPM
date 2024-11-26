@@ -9,6 +9,7 @@ from .inception import InceptionV3
 
 DIM = 2048
 device = torch.device('cuda:0')
+# device = torch.device('cpu')
 
 
 def torch_cov(m, rowvar=False):

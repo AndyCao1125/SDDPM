@@ -1,0 +1,15 @@
+python ../../main_SDDPM.py \
+    --train \
+    --resume \
+    --dataset='mnist' \
+    --beta_1=1e-5 --beta_T=0.02 \
+    --img_ch=1 \
+    --batch_size=128 \
+    --encoding='ttfs' \
+    --img_size=32 --timestep=8 \
+    --parallel=True --sample_step=500 \
+    --total_steps=50001 \
+    --save_step=1000 \
+    --resume_model='../logs/ttfs_3/9000ckpt.pt' \
+    --logdir='../logs/ttfs_3' \
+    --wandb

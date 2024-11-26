@@ -49,12 +49,12 @@ parser.add_argument('--T', default=1000, type=int, help='total diffusion steps')
 parser.add_argument('--mean_type', default='epsilon', help='predict variable:[xprev, xstart, epsilon]')
 parser.add_argument('--var_type', default='fixedlarge', help='variance type:[fixedlarge, fixedsmall]')
 # Training
-parser.add_argument('--resume', default=False, help="load pre-trained model")
+parser.add_argument('--resume', default=False, action='store_true', help="load pre-trained model")
 parser.add_argument('--resume_model', type=str, help='resume model path')
-parser.add_argument('--lr', default=2e-4, help='target learning rate')
+parser.add_argument('--lr', default=2e-3, help='target learning rate')
 parser.add_argument('--grad_clip', default=1., help="gradient norm clipping")
 parser.add_argument('--total_steps', type=int, default=500000, help='total training steps')
-parser.add_argument('--warmup', default=5000, help='learning rate warmup')
+parser.add_argument('--warmup', default=500, help='learning rate warmup')
 parser.add_argument('--batch_size', type=int, default=32, help='batch size')
 parser.add_argument('--num_workers', type=int, default=4, help='workers of Dataloader')
 parser.add_argument('--ema_decay', default=0.9999, help="ema decay rate")
@@ -66,6 +66,8 @@ parser.add_argument('--sample_step', type=int,default=5000, help='frequency of s
 # Evaluation
 parser.add_argument('--save_step', type=int,default=0, help='frequency of saving checkpoints, 0 to disable during training')
 parser.add_argument('--eval_step', type=int,default=0, help='frequency of evaluating model, 0 to disable during training')
+parser.add_argument('--eval_save_img', type=str,default='./logs/ddpm.png', help='frequency of evaluating model, 0 to disable during training')
+parser.add_argument('--eval_img_dir', type=str,default='./logs/ddpm.png', help='frequency of evaluating model, 0 to disable during training')
 parser.add_argument('--num_images', type=int,default=50000, help='the number of generated images for evaluation')
 parser.add_argument('--fid_use_torch', default=True, help='calculate IS and FID on gpu')
 parser.add_argument('--fid_cache', default='./stats/cifar10.train.npz', help='FID cache')
@@ -75,9 +77,9 @@ parser.add_argument('--pre_trained_path', default='./pth/1224_4T.pt', help='FID 
 args = parser.parse_args()
 
 
-# device = torch.device('cuda:0')
+device = torch.device('cuda:0')
 # device = torch.device("mps")
-device = torch.device('cpu')
+# device = torch.device('cpu')
 
 
 def seed_everything(seed_value):
@@ -122,7 +124,7 @@ def evaluate(sampler, model):
             batch_images = sampler(x_T.to(device)).cpu()
             images.append((batch_images + 1) / 2)
             grid = (make_grid(batch_images[:64,...]) + 1) / 2
-            save_image(grid, 'ddpm.png')
+            save_image(grid, 'eval_test_img')
         images = torch.cat(images, dim=0).numpy()
     model.train()
     (IS, IS_std), FID = get_inception_and_fid_score(
@@ -193,7 +195,8 @@ def train():
     # model setup
     net_model = Spk_UNet(
        T=args.T, ch=args.ch, ch_mult=args.ch_mult, attn=args.attn,
-       num_res_blocks=args.num_res_blocks, dropout=args.dropout, timestep=args.timestep, img_ch=args.img_ch)
+       num_res_blocks=args.num_res_blocks, dropout=args.dropout, timestep=args.timestep, img_ch=args.img_ch, 
+       encoding=args.encoding)
     optim = torch.optim.Adam(net_model.parameters(), lr=args.lr)
     
     if args.resume:
@@ -214,9 +217,6 @@ def train():
     if args.parallel:
         trainer = torch.nn.DataParallel(trainer)
         net_sampler = torch.nn.DataParallel(net_sampler).to(device)
-
-
-
 
     # log setup
     if not os.path.exists(os.path.join(args.logdir,'sample')):
@@ -320,6 +320,8 @@ def eval():
     if args.parallel:
         sampler = torch.nn.DataParallel(sampler)
 
+    os.makedirs(args.eval_img_dir, exist_ok=True)
+
     with torch.no_grad():
         images = []
         desc = "generating images"
@@ -328,19 +330,32 @@ def eval():
             x_T = torch.randn((batch_size, int(args.img_ch), int(args.img_size), int(args.img_size)))
             batch_images = sampler(x_T.to(device))
             batch_images = batch_images.cpu()
-            images.append((batch_images + 1) / 2)           
+            for j in range(batch_size):
+                save_image(batch_images[j], os.path.join(args.eval_img_dir, f'image_{i + j}.png'))
+
         images = torch.cat(images, dim=0).numpy()
-    print(images.shape)
-    (IS, IS_std), FID = get_inception_and_fid_score(
-        images, args.fid_cache, num_images=args.num_images,
-        use_torch=args.fid_use_torch, verbose=True) 
-    print(f'IS: {IS}, IS_std: {IS_std}, FID: {FID}')
+    
+    # (IS, IS_std), FID = get_inception_and_fid_score(
+    #     images, args.fid_cache, num_images=args.num_images,
+    #     use_torch=args.fid_use_torch, verbose=True) 
+    # print(f'IS: {IS}, IS_std: {IS_std}, FID: {FID}')
 
 
 def main():
+
+    if args.train and not args.resume:
+        if os.path.exists(args.logdir):
+            print(f"path {args.logdir} already exist. rename")
+            return
+
+        # save all config in the log file
+        os.makedirs(args.logdir)
+        with open(os.path.join(args.logdir, 'config.txt'), 'a') as f:
+            json.dump(vars(args), f, indent=2)
+
     if args.wandb:
         ## wandb init ##
-        wandb.init(project="spike_diffusion", name=str(args.dataset)+str(args.sample_type))
+        wandb.init(project="SpikingDiffusionModels", name=args.logdir)
         # suppress annoying inception_v3 initialization warning #
         warnings.simplefilter(action='ignore', category=FutureWarning)
 

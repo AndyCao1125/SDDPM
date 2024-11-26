@@ -288,6 +288,27 @@ class Spk_UNet(nn.Module):
         functional.set_step_mode(self, step_mode='m')
 
         self.initialize()
+    
+    def ttfs_encoding(self, img, tau=1, R=10_000, v_th=0.5):
+        # Normalize input to [0, 1] range
+        # img_normalized = (img - img.min()) / (img.max() - img.min()) ## Asuming dataset is normalized
+
+        ri = R * img
+
+        # all values are above threshold to avoid undefined logarithms
+        ri = torch.clamp(ri, min=v_th + 1e-6)
+        out = tau * torch.log(ri / (ri - v_th))
+
+        t_min = out.min()
+        t_max = out.max()
+
+        bins = torch.exp(torch.linspace(torch.log(t_min + 1e-6), torch.log(t_max + 1e-6), self.timestep + 1)).to(out.device)
+
+        digits = torch.bucketize(out, bins, right=True) - 1
+        digits = torch.clamp(digits, 0, self.timestep - 1)
+        out = torch.nn.functional.one_hot(digits, num_classes=self.timestep) # [B, C, H, W, T]
+        out = out.permute(4, 0, 1, 2, 3) # [T, B, C, H, W]
+        return out
 
     def initialize(self):
         # init.xavier_uniform_(self.head.weight)
@@ -299,16 +320,21 @@ class Spk_UNet(nn.Module):
 
     def forward(self, x, t):
 
-        x = x.unsqueeze(0).repeat(self.timestep, 1, 1, 1, 1)  # [T, B, C, H, W]
-
         # Timestep embedding
         temb = self.time_embedding(t) # Diffusion process
 
         # Downsampling
-        T, B, C, H, W = x.shape
         if self.encoding == 'rate':
-            h = spikegen.rate(h, time_var_input=True)
-
+            x = x.unsqueeze(0).repeat(self.timestep, 1, 1, 1, 1)  # [T, B, C, H, W]
+            x = spikegen.rate(x, time_var_input=True)
+        elif self.encoding == 'ttfs':
+            x = self.ttfs_encoding(x)
+            if self.training:
+                x = x.to(dtype=self.conv.weight.dtype) # Converting int to float in training for better gradient learning
+        elif not self.encoding:
+            x = x.unsqueeze(0).repeat(self.timestep, 1, 1, 1, 1)  # [T, B, C, H, W]
+        
+        T, B, C, H, W = x.shape
         h = x.flatten(0, 1)  ## [T*B C H W]
         h = self.conv(h)
         h = self.bn(h).reshape(T, B, -1, H, W).contiguous()

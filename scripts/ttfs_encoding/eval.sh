@@ -1,0 +1,13 @@
+python ../../main_SDDPM.py \
+    --eval \
+    --dataset='mnist' \
+    --beta_1=1e-4 --beta_T=0.02 \
+    --img_ch=1 \
+    --encoding='ttfs' \
+    --img_size=32 --timestep=4 \
+    --parallel=True --sample_step=0 \
+    --num_images=20 \
+    --eval_img_dir='../logs/ttfs_3/9000ckpt_nstep=500' \
+    --logdir='../logs/ttfs_3' \
+    --num_step=500 \
+    --pre_trained_path='../logs/ttfs_3/9000ckpt.pt'

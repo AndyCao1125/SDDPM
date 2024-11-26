@@ -8,7 +8,7 @@ from .fid import calculate_frechet_distance, torch_cov
 
 
 device = torch.device('cuda:0')
-
+# device = torch.device('cpu')
 
 def get_inception_and_fid_score(images, fid_cache, num_images=None,
                                 splits=10, batch_size=50,
