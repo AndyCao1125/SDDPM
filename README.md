@@ -34,11 +34,12 @@
 
 ## Updates
 - **2025.5**, we create the discussion section in this repository and provide the insights regarding the recent reproduction of SDDPM ([discussion#13](https://github.com/AndyCao1125/SDDPM/discussions/13)). Feel free to start a new discussion or issue!
-- **2024.3**, the checkpoint of SDDPM in Cifar10 with FID ~19 is released!
+- **2024.8**, we release Spiking Diffusion Model accepted to *IEEE Transactions on AI*, which (a) extends applicability to a wider array of diffusion solvers, (b) integrates Temporal-wise Spiking Mechanism to capture more dynamic information, and (c) makes the first attempt to utilize an ANN-SNN approach for implementing spiking diffusion models. Codes are available at [https://github.com/AndyCao1125/SDM](https://github.com/AndyCao1125/SDM)!
+- **2024.3**, the checkpoint of SDDPM in Cifar10 with FID 19 is released!
 
 ## Requirements
 
-1. (Optional) Creating conda environment.
+1. Creating conda environment.
 ```shell
 conda create -n SDDPM python=3.8
 conda activate SDDPM
