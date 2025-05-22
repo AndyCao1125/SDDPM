@@ -32,7 +32,9 @@
   </p>
 </p>
 
-
+## Updates
+- **2025.5**, we create the discussion section in this repository and provide the insights regarding the recent reproduction of SDDPM ([discussion#13](https://github.com/AndyCao1125/SDDPM/discussions/13)). Feel free to start a new discussion or issue!
+- **2024.3**, the checkpoint of SDDPM in Cifar10 with FID ~19 is released!
 
 ## Requirements
 
